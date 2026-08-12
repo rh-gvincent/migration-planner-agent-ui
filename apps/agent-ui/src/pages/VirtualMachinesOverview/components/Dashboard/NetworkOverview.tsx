@@ -255,7 +255,7 @@ export const NetworkOverview: React.FC<NetworkOverviewProps> = ({
         isExportMode ? dashboardStyles.cardPrint : dashboardStyles.card
       }
       id="network-overview"
-      style={{ overflow: "hidden" }}
+      style={{ overflow: "visible" }}
     >
       <CardTitle>
         <Flex

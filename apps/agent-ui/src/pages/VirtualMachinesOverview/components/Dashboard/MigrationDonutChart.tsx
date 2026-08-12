@@ -1,9 +1,5 @@
 import { css } from "@emotion/css";
-import {
-  ChartDonut,
-  ChartLabel,
-  ChartLegend,
-} from "@patternfly/react-charts/victory";
+import { ChartDonut, ChartLabel } from "@patternfly/react-charts/victory";
 import { EmptyStateVariant, Flex, FlexItem } from "@patternfly/react-core";
 import { InboxIcon } from "@patternfly/react-icons";
 import type React from "react";
@@ -337,84 +333,94 @@ const MigrationDonutChart: React.FC<MigrationDonutChartProps> = ({
         className="pf-v6-u-w-100"
         style={{
           marginLeft: marginLeft,
-          overflow: "hidden",
+          overflow: "visible",
           minHeight: "40px",
         }}
         justifyContent={{ default: "justifyContentCenter" }}
         alignItems={{ default: "alignItemsFlexStart" }}
       >
-        {onItemClick ? (
-          // Custom clickable legend
-          <Flex
-            style={{
-              maxWidth: legendWidth ?? 800,
-              padding: "var(--pf-t--global--spacer--ml)",
-            }}
-            spaceItems={{ default: "spaceItemsMd" }}
-            justifyContent={{ default: "justifyContentCenter" }}
-            alignItems={{ default: "alignItemsCenter" }}
-            flexWrap={{ default: "wrap" }}
-          >
-            {data.map((item) => (
-              <FlexItem key={`${item.legendCategory}-${item.name}`}>
-                <button
-                  type="button"
-                  onClick={() => onItemClick(item)}
-                  className="pf-v6-u-display-inline-flex pf-v6-u-align-items-center"
-                  style={{
-                    gap: "var(--pf-t--global--spacer--lg)",
-                    cursor: "pointer",
-                    border: "none",
-                    background: "none",
-                    padding:
-                      "var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--ml)",
-                    margin: 0,
-                    transition:
-                      "opacity var(--pf-t--global--motion--duration--short)",
-                    whiteSpace: "nowrap",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.opacity = "0.7";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = "1";
-                  }}
+        <Flex
+          style={{
+            maxWidth: legendWidth ?? 800,
+            padding: "var(--pf-t--global--spacer--ml)",
+          }}
+          spaceItems={{ default: "spaceItemsMd" }}
+          justifyContent={{ default: "justifyContentCenter" }}
+          alignItems={{ default: "alignItemsCenter" }}
+          flexWrap={{ default: "wrap" }}
+        >
+          {data.map((item) => {
+            const label = legendLabelFormatter
+              ? legendLabelFormatter({
+                  x: item.name,
+                  countDisplay: item.countDisplay,
+                })
+              : item.name;
+
+            const content = (
+              <>
+                <svg
+                  width="10"
+                  height="10"
+                  aria-hidden="true"
+                  className={legendStyles.icon}
                 >
-                  <svg
+                  <title>Legend color indicator</title>
+                  <rect
                     width="10"
                     height="10"
-                    aria-hidden="true"
-                    className={legendStyles.icon}
+                    fill={getColor(item.legendCategory)}
+                  />
+                </svg>
+                <span>{label}</span>
+              </>
+            );
+
+            return (
+              <FlexItem key={`${item.legendCategory}-${item.name}`}>
+                {onItemClick ? (
+                  <button
+                    type="button"
+                    onClick={() => onItemClick(item)}
+                    className="pf-v6-u-display-inline-flex pf-v6-u-align-items-center"
+                    style={{
+                      gap: "var(--pf-t--global--spacer--lg)",
+                      cursor: "pointer",
+                      border: "none",
+                      background: "none",
+                      padding:
+                        "var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--ml)",
+                      margin: 0,
+                      transition:
+                        "opacity var(--pf-t--global--motion--duration--short)",
+                      whiteSpace: "nowrap",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.opacity = "0.7";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.opacity = "1";
+                    }}
                   >
-                    <title>Legend color indicator</title>
-                    <rect
-                      width="10"
-                      height="10"
-                      fill={getColor(item.legendCategory)}
-                    />
-                  </svg>
-                  <span>
-                    {legendLabelFormatter
-                      ? legendLabelFormatter({
-                          x: item.name,
-                          countDisplay: item.countDisplay,
-                        })
-                      : item.name}
+                    {content}
+                  </button>
+                ) : (
+                  <span
+                    className="pf-v6-u-display-inline-flex pf-v6-u-align-items-center"
+                    style={{
+                      gap: "var(--pf-t--global--spacer--lg)",
+                      padding:
+                        "var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--ml)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {content}
                   </span>
-                </button>
+                )}
               </FlexItem>
-            ))}
-          </Flex>
-        ) : (
-          // Standard non-clickable legend (centered via x offset)
-          <ChartLegend
-            data={legendData}
-            orientation="horizontal"
-            width={legendWidthValue}
-            itemsPerRow={itemsPerRow}
-            x={legendX}
-          />
-        )}
+            );
+          })}
+        </Flex>
       </Flex>
     </Flex>
   );

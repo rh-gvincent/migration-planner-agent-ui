@@ -320,7 +320,7 @@ export const ClustersOverview: React.FC<ClustersOverviewProps> = ({
       }
       id="clusters-overview"
       data-export-block={isExportMode ? "3.1" : undefined}
-      style={{ overflow: "hidden" }}
+      style={{ overflow: "visible" }}
     >
       <CardTitle>
         <Flex
